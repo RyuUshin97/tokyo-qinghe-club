@@ -291,6 +291,24 @@
    移动端优化
    ------------------------------- */
 @media (max-width: 640px) {
+
+  /* 顶部标题栏更紧凑 */
+  .header {
+    min-height: 44px;    /* 原 52px → 更薄更贴边 */
+    padding: 0 0.8rem;   /* 减少左右留白 */
+  }
+
+  .header .logo a {
+    font-size: 1.15rem;  /* 缩小标题字体，保持居中 */
+  }
+
+  .header .nav,
+  .menu {
+    font-size: 0.95rem;  /* 缩菜单字体 */
+    gap: 0.8rem;         /* 菜单间距更紧凑 */
+  }
+
+  /* 文章卡片、正文等其他移动端优化 */
   .post-card__media { aspect-ratio: 3 / 2; }
   .post-card__body { padding: 12px 12px 14px; }
   .post-card__title { font-size: 1.02rem; }
