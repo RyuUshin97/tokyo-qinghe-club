@@ -1,0 +1,68 @@
+{{ define "main" }}
+<main id="main" class="main">
+  {{ if .Title }}
+  <header class="page-header">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="page-desc">{{ . }}</p>{{ end }}
+  </header>
+  {{ end }}
+
+  {{/* 用分页器 */}}
+  {{ $p := .Paginate .Pages }}
+
+  {{ if gt (len $p.Pages) 0 }}
+  <section class="post-grid">
+    {{ range $p.Pages }}
+    <article class="post-card">
+      <!-- 文章链接：用绝对链接 .Permalink，避免以 / 开头的相对路径问题 -->
+      <a class="post-card__media" href="{{ .Permalink }}" aria-label="{{ .Title }}">
+        {{/* 统一挑封面 */}}
+        {{ $cover := "" }}
+        {{ with .Params.cover }}
+          {{ if .image }}{{ $cover = .image }}{{ else }}{{ $cover = . }}{{ end }}
+        {{ else }}
+          {{ with .Params.images }}{{ $cover = index . 0 }}{{ end }}
+        {{ end }}
+        {{ with $cover }}
+          <!-- 资源链接：一律用 relURL，让它自动拼上 baseURL 的子路径 -->
+          <img loading="lazy" src="{{ . | relURL }}" alt="{{ $.Title }}">
+        {{ end }}
+      </a>
+
+      <div class="post-card__body">
+        <h2 class="post-card__title"><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+        <div class="post-card__meta">
+          <time datetime="{{ .Date }}">{{ .Date.Format "2006-01-02" }}</time>{{ with .ReadingTime }} · {{ . }} 分钟阅读{{ end }}
+        </div>
+        {{ with .Summary }}
+          <p class="post-card__excerpt">{{ . | plainify }}</p>
+        {{ end }}
+
+        {{ with .Params.tags }}
+          <ul class="post-card__tags">
+            {{ range . }}
+              <!-- 标签链接：printf + relURL，绝不手写 /tags/... -->
+              <li><a href="{{ (printf "tags/%s/" (urlize .)) | relURL }}">#{{ . }}</a></li>
+            {{ end }}
+          </ul>
+        {{ end }}
+      </div>
+    </article>
+    {{ end }}
+  </section>
+
+  {{ if templates.Exists "partials/pagination.html" }}
+    {{ partial "pagination.html" . }}
+  {{ else }}
+    <nav class="pagination">
+      <!-- 分页链接也过 relURL，避免变成以 / 开头 -->
+      {{ with $p.Prev }}<a class="prev" href="{{ .URL | relURL }}">上一页</a>{{ end }}
+      {{ with $p.Next }}<a class="next" href="{{ .URL | relURL }}">下一页</a>{{ end }}
+    </nav>
+  {{ end }}
+
+  {{ else }}
+    <p>暂无文章。</p>
+  {{ end }}
+</main>
+{{ end }}

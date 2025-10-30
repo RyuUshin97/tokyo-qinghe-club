@@ -1,0 +1,78 @@
+{{ define "main" }}
+<main id="main" class="main">
+
+  {{/* 首页顶部的 homeInfo（如果配置了） */}}
+  {{ if .Site.Params.homeInfoParams }}
+    {{ partial "home_info.html" . }}
+  {{ end }}
+
+  {{/* 取首页要展示的文章集合：尊重 params.mainSections */}}
+  {{ $sections := .Site.Params.mainSections | default (slice "posts") }}
+  {{ $pages := where .Site.RegularPages "Section" "in" $sections }}
+
+  {{/* 分页（新 Hugo 需显式使用 .Paginate） */}}
+  {{ $p := .Paginate $pages }}
+
+  {{ if gt (len $p.Pages) 0 }}
+  <section class="post-grid">
+    {{ range $p.Pages }}
+    <article class="post-card">
+
+      <!-- 文章链接：用 .Permalink 避免根目录路径出错 -->
+      <a class="post-card__media" href="{{ .Permalink }}" aria-label="{{ .Title }}">
+
+        <!-- 封面优先级：params.cover.image > params.cover > params.images[0] -->
+        {{ $cover := "" }}
+        {{ with .Params.cover }}
+          {{ if .image }}{{ $cover = .image }}{{ else }}{{ $cover = . }}{{ end }}
+        {{ else }}
+          {{ with .Params.images }}{{ $cover = index . 0 }}{{ end }}
+        {{ end }}
+
+        {{ with $cover }}
+          <!-- 使用 relURL 自动拼接 baseURL 子路径 -->
+          <img loading="lazy" src="{{ . | relURL }}" alt="{{ $.Title }}">
+        {{ end }}
+      </a>
+
+      <div class="post-card__body">
+        <h2 class="post-card__title"><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+
+        <div class="post-card__meta">
+          <time datetime="{{ .Date }}">{{ .Date.Format "2006-01-02" }}</time>
+          {{ with .ReadingTime }} · {{ . }} 分钟阅读{{ end }}
+        </div>
+
+        {{ with .Summary }}
+          <p class="post-card__excerpt">{{ . | plainify }}</p>
+        {{ end }}
+
+        {{ with .Params.tags }}
+          <ul class="post-card__tags">
+            {{ range . }}
+              <!-- 标签链接：printf + relURL，防止路径丢失 -->
+              <li><a href="{{ (printf "tags/%s/" (urlize .)) | relURL }}">#{{ . }}</a></li>
+            {{ end }}
+          </ul>
+        {{ end }}
+      </div>
+    </article>
+    {{ end }}
+  </section>
+
+  <!-- 使用主题自带分页（若存在），否则后备 -->
+  {{ if templates.Exists "partials/pagination.html" }}
+    {{ partial "pagination.html" . }}
+  {{ else }}
+    <nav class="pagination">
+      {{ with $p.Prev }}<a class="prev" href="{{ .URL | relURL }}">上一页</a>{{ end }}
+      {{ with $p.Next }}<a class="next" href="{{ .URL | relURL }}">下一页</a>{{ end }}
+    </nav>
+  {{ end }}
+
+  {{ else }}
+    <p>暂无文章。</p>
+  {{ end }}
+
+</main>
+{{ end }}

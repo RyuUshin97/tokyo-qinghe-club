@@ -1,0 +1,107 @@
+baseURL = "https://ryuushin97.github.io/tokyo-qinghe-club/"   # ← 改为你自己的正式网址
+languageCode = "zh-CN"
+title = "东京青合俱乐部"
+theme = "PaperMod"
+canonifyURLs = true      # 把相对链接规范成绝对链接（含 baseURL）
+relativeURLs = false     # 我们改内容里的写法，尽量不依赖相对链接魔法
+
+# ---------------------------
+# ✅ 基础设置
+# ---------------------------
+enableRobotsTXT = true          # 生成 robots.txt，利于 SEO
+buildDrafts = false             # 构建时忽略草稿
+buildFuture = false             # 构建时忽略未来日期文章
+
+# ✅ 分页（Hugo v0.128+ 正确写法；不要再用 paginate）
+[pagination]
+  pagerSize = 10                # 每页显示 10 篇文章
+
+# ---------------------------
+# ✅ 输出设置（启用 JSON 以支持搜索索引等）
+# ---------------------------
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+# ---------------------------
+# ✅ 主题参数（PaperMod 核心）
+# ---------------------------
+[params]
+  env = "production"            # 启用社交/SEO元数据（OpenGraph / Twitter / Schema）
+  ShowBreadCrumbs = true        # 面包屑导航
+  ShowReadingTime = true        # 阅读时间
+  ShowPostNavLinks = true       # 上一篇 / 下一篇
+  ShowCodeCopyButtons = true    # 代码复制按钮
+  disableScrollToTop = false    # 显示“返回顶部”
+  ShowShareButtons = true       # 显示社交分享
+  author = "我们的小组"
+
+  # 封面与摘要
+  showPostImage = true          # 列表/文章页显示封面
+  showSummary = true            # 列表页显示摘要（可配合 <!--more--> 手动截断）
+
+  # ✅ 主体内容文件夹（控制首页显示哪些 section）
+  mainSections = ["posts"]      # 仅显示 content/posts/ 下的文章在首页
+
+  # 主页简介区块（首页 hero）
+  [params.homeInfoParams]
+    Title = "在日外国青年的家"
+    Content = """
+本网站记录我们在日本的劳动实践、宣传文章与集体思考。  
+我们致力于关注在日劳动者、抵抗资本主义剥削与文化歧视。  
+
+![首页横幅图](/image/banner.jpg#center)
+"""
+
+  # ✅ 站点图标（将文件放在 /static/ 下）
+  [params.assets]
+    favicon = "/favicon.ico"
+    favicon16x16 = "/favicon-16x16.png"
+    favicon32x32 = "/favicon-32x32.png"
+    apple_touch_icon = "/apple-touch-icon.png"
+    safari_pinned_tab = "/safari-pinned-tab.svg"
+
+    # 来自 FAQ 的稳定性建议
+    disableFingerprinting = true   # 防止 SRI/integrity 校验导致资源不加载
+    disableHLJS = true             # 关闭 Highlight.js，改用 Hugo Chroma
+
+# ---------------------------
+# ✅ 菜单导航
+# ---------------------------
+[menu]
+  [[menu.main]]
+    name = "首页"
+    url = ""
+    weight = 1
+
+  [[menu.main]]
+    name = "文章"
+    url = "posts/"
+    weight = 2
+
+  [[menu.main]]
+    name = "关于我们"
+    url = "about/"
+    weight = 3
+
+# ---------------------------
+# ✅ 代码高亮与 Markdown 样式
+# ---------------------------
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true  # 允许渲染原生 HTML（如 <img>、自定义 figure 等）
+
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    noClasses = false
+    style = "monokai"
+    tabWidth = 4
+
+# ---------------------------
+# ✅ 隐私（可选；示例为关闭第三方追踪）
+# ---------------------------
+[privacy]
+  [privacy.youtube]
+    privacyEnhanced = true

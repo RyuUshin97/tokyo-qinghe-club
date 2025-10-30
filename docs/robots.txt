@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://ryuushin97.github.io/tokyo-qinghe-club/sitemap.xml
